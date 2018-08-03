@@ -25,7 +25,7 @@ function resolverFactory(targetMaybeThunk, options = {}) {
 
   invariant(options.include === undefined, 'Include support has been removed in favor of dataloader batching');
   if (options.before === undefined) options.before = (options) => options;
-  if (options.after === undefined) options.after = (result) => result;
+  if (options.after === undefined) options.after = (result) => result.rows;
   if (options.handleConnection === undefined) options.handleConnection = true;
 
   return async function (source, args, context, info) {
@@ -95,7 +95,7 @@ function resolverFactory(targetMaybeThunk, options = {}) {
         }
       }
 
-      return model[list ? 'findAll' : 'findOne'](findOptions);
+      return model[list ? 'findAndCountAll' : 'findOne'](findOptions);
     }).then(function (result) {
       return options.after(result, args, context, info);
     });
